@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enquête Interactive - Absolute Divinity</title>
+  <style>
+    body { background-color: #0f0f0f; color: #ffffff; font-family: 'Poppins', sans-serif; text-align: center; padding: 20px; }
+    h1 { color: #f4c542; }
+    .button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin: 10px; font-size: 16px; }
+    .button:hover { background-color: #45a049; }
+    input[type="text"] { padding: 10px; border-radius: 5px; border: 1px solid #555; width: 80%; margin-top: 10px; background-color: #222; color: white; }
+    .hidden { display: none; }
+    .area { background-color: #1a1a1a; padding: 20px; border-radius: 8px; margin: 20px auto; max-width: 600px; animation: fadeIn 1s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<h1>🆘 Enquête Interactive – Absolute Divinity</h1>
+
+<div id="step1" class="area">
+    <h2>Etape 1: Déchiffrez l'indice</h2>
+    <p>Utilise ce code trouvé pour percer le voile : <strong>2L7TgrcUMk</strong></p>
+    <p>(Ce que tu cherches se trouve ici: https://pastebin.com/2QUh2vKE)</p>
+    <input type="text" id="inputStep1" placeholder="Entrez le mot-clé...">
+    <br>
+    <button class="button" onclick="validateStep1()">Valider</button>
+    <p id="msgStep1"></p>
+</div>
+
+<div id="cooldown" class="area hidden">
+    <h2>Veuillez patienter...</h2>
+    <p id="cooldownTimer"></p>
+</div>
+
+<div id="step2" class="area hidden">
+    <h2>Etape 2: Quiz Brawl Stars</h2>
+    <form id="quizForm">
+        <p>Quel brawler tire des projectiles rebondissants ?<br>
+        <input type="radio" name="q1" value="ricochet"> Ricochet<br>
+        <input type="radio" name="q1" value="nita"> Nita<br>
+        <input type="radio" name="q1" value="penny"> Penny</p>
+
+        <p>Mode pour collecter des gemmes ?<br>
+        <input type="radio" name="q2" value="gem"> Razzia de Gemmes<br>
+        <input type="radio" name="q2" value="survival"> Survivant<br>
+        <input type="radio" name="q2" value="heist"> Braquage</p>
+
+        <p>Rareté de Bo, Dynamike, Tick ?<br>
+        <input type="radio" name="q3" value="super"> Super Rare<br>
+        <input type="radio" name="q3" value="epic"> Epique<br>
+        <input type="radio" name="q3" value="mythic"> Mythique</p>
+
+        <button type="button" class="button" onclick="validateQuiz()">Soumettre</button>
+        <p id="msgStep2"></p>
+    </form>
+</div>
+
+<div id="step3" class="area hidden">
+    <h2>Etape 3: L'Énigme de l'Essence Cachée</h2>
+    <p style="animation: fadeIn 2s ease;">
+    Je suis dissimulé dans l'éther d'une création.<br>
+    Mon porteur ne parle pas directement de moi,<br>
+    mais son essence me trahit.<br>
+    Cherche celui qui a bâti ce chemin,<br>
+    et déchiffre son message silencieux.<br>
+    <br>
+    Quelle est la clé ?
+    </p>
+    <input type="text" id="inputStep3" placeholder="Votre réponse ici...">
+    <br>
+    <button class="button" onclick="validateRiddle()">Soumettre</button>
+    <p id="msgStep3"></p>
+</div>
+
+<div id="final" class="area hidden">
+    <h2>🌟 Félicitations 🌟</h2>
+    <p>Tu as percé le voile de l'oubli et atteint l'Absolute Divinity.</p>
+</div>
+
+<script>
+let cooldownDuration = 12 * 60 * 60 * 1000; // 12 heures en millisecondes
+const step1Code = "le secret te sera révélé bientôt";
+const riddleAnswer = "the divinity has been released!";
+
+// Vérifie si un compte à rebours est déjà en place
+let cooldownEndTime = localStorage.getItem('cooldownEndTime');
+
+function validateStep1() {
+    const input = document.getElementById('inputStep1').value.trim().toLowerCase();
+    if (input === step1Code) {
+        localStorage.setItem('step1done', 'true');
+        cooldownEndTime = Date.now() + cooldownDuration;
+        localStorage.setItem('cooldownEndTime', cooldownEndTime);
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('cooldown').classList.remove('hidden');
+        updateCooldown();
+    } else {
+        document.getElementById('msgStep1').innerText = "Mauvais code. Cherche mieux.";
+    }
+}
+
+function updateCooldown() {
+    const interval = setInterval(() => {
+        const remaining = cooldownEndTime - Date.now();
+        if (remaining > 0) {
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            document.getElementById('cooldownTimer').innerText = `Temps restant: ${hours}:${minutes}:${seconds}`;
+        } else {
+            clearInterval(interval);
+            document.getElementById('cooldown').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+    }, 1000);
+}
+
+function validateQuiz() {
+    const form = document.forms['quizForm'];
+    if (form.q1.value === "ricochet" && form.q2.value === "gem" && form.q3.value === "epic") {
+        localStorage.setItem('step2done', 'true');
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.remove('hidden');
+    } else {
+        document.getElementById('msgStep2').innerText = "Certaines réponses sont fausses. Réessaie.";
+    }
+}
+
+function validateRiddle() {
+    const input = document.getElementById('inputStep3').value.trim().toLowerCase();
+    if (input === riddleAnswer) {
+        localStorage.setItem('step3done', 'true');
+        document.getElementById('step3').classList.add('hidden');
+        document.getElementById('final').classList.remove('hidden');
+    } else {
+        document.getElementById('msgStep3').innerText = "Mauvaise réponse. Plonge plus profond.";
+    }
+}
+
+window.onload = function() {
+    if (localStorage.getItem('step1done') && !localStorage.getItem('step2done')) {
+        if (cooldownEndTime && Date.now() < cooldownEndTime) {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('cooldown').classList.remove('hidden');
+            updateCooldown();
+        } else {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        }
+    }
+    if (localStorage.getItem('step2done') && !localStorage.getItem('step3done')) {
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.remove('hidden');
+    }
+    if (localStorage.getItem('step3done')) {
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.add('hidden');
+        document.getElementById('final').classList.remove('hidden');
+    }
+}
+</script>
+
+</body>
+</html>
